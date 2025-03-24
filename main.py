@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from StonehengeCalc import calc
 app = Flask(__name__)
 
-@app.route('/api', methods=['GET'])
+@app.route('/api', methods=['POST'])
 def api():
     # Получаем 3 параметра из URL
     context = []
