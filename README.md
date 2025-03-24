@@ -1,2 +1,0 @@
-# NFF-world
-dimasvyat
