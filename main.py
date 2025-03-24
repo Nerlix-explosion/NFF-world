@@ -49,9 +49,10 @@ app = Flask(__name__)
 def api():
     try:
         if request.method == 'GET':
-            data = request.args.to_dict()  # Для GET-параметров
-        else:
             data = request.get_json()
+             # Для GET-параметров
+        else:
+            data = request.args.to_dict() 
     except:
         return "ERROR"
     response = []
