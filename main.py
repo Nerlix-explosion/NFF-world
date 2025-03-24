@@ -1,3 +1,4 @@
+"""
 from flask import Flask, request, jsonify
 from StonehengeCalc import calc
 app = Flask(__name__)
@@ -40,3 +41,18 @@ def api():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
+"""
+from flask import Flask, request, jsonify
+app = Flask(__name__)
+
+@app.route('/api', methods=['GET', 'POST'])  # Разрешаем оба метода для тестирования
+def api():
+    try:
+        if request.method == 'GET':
+            data = request.args.to_dict()  # Для GET-параметров
+        else:
+            data = request.get_json()
+    except:
+        return "ERROR"
+    response = []
+    return jsonify(response)
