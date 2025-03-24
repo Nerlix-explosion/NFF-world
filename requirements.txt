@@ -1,6 +1,5 @@
 Flask
 gunicorn
-unittest
 numpy
 ephem
 datetime
