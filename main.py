@@ -11,7 +11,7 @@ def api():
     modes2 = ['Sunrise', 'Sunset']
 
     # Проверяем наличие всех полей
-    if not data or not all(key in data for key in ['param1', 'param2', 'param3']):
+    if not data or not all(key in data for key in ['year']):
         return jsonify({"error": "Missing or invalid JSON data"}), 400
 
     y = data['year']
