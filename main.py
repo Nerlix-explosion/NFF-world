@@ -2,31 +2,41 @@ from flask import Flask, request, jsonify
 from StonehengeCalc import calc
 app = Flask(__name__)
 
-@app.route('/api', methods=['POST'])
+@app.route('/api', methods=['GET', 'POST'])  # Разрешаем оба метода для тестирования
 def api():
-    # Получаем 3 параметра из URL
-    context = []
-    data = request.get_json()
-    modes1 = ['Sun', 'Moon']
-    modes2 = ['Sunrise', 'Sunset']
+    try:
+        if request.method == 'GET':
+            data = request.args.to_dict()  # Для GET-параметров
+        else:
+            data = request.get_json()  # Для POST с JSON
 
-    # Проверяем наличие всех полей
-    if not data or not all(key in data for key in ['year']):
-        return jsonify({"error": "Missing or invalid JSON data"}), 400
+        # Проверяем обязательные поля
+        required_fields = ['year', 'month', 'day']
+        if not all(field in data for field in required_fields):
+            return jsonify({"error": "Missing required fields"}), 400
 
-    y = data['year']
-    mt = data['month']
-    d = data['day']
-    h = data['hour']
-    m = data['minute']
+        # Устанавливаем значения по умолчанию для часа и минуты
+        hour = data.get('hour', '0')
+        minute = data.get('minute', '0')
 
-    data1 = calc(str(modes1.index(modes1[0])+1), y, mt, d, h, m)
-    data2 = calc(str(modes1.index(modes1[1])+1), y, mt, d, h, m)
-    data3 = calc(str(len(modes1)+modes2.index(modes2[0])+1), y, mt, d)
-    data4 = calc(str(len(modes1)+modes2.index(modes2[1])+1), y, mt, d)
-    context = {**context, **data1, **data2, **data3, **data4}
-    # Ваша логика обработки (например, просто возвращаем их)
+        # Вычисляем данные
+        sun_data = calc('1', data['year'], data['month'], data['day'], hour, minute)
+        moon_data = calc('2', data['year'], data['month'], data['day'], hour, minute)
+        sunrise_data = calc('3', data['year'], data['month'], data['day'])
+        sunset_data = calc('4', data['year'], data['month'], data['day'])
 
-    return jsonify(context)
+        # Формируем ответ
+        response = {
+            "sun": sun_data,
+            "moon": moon_data,
+            "sunrise": sunrise_data,
+            "sunset": sunset_data
+        }
+
+        return jsonify(response)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
